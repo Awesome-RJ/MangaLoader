@@ -25,7 +25,7 @@ async def _pdf(bot, callback_query):
     await run_cmd(cmd)
     count = 0
     d = manga_dir
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         for path in os.listdir(file):
             if os.path.isfile(os.path.join(file, path)):
                 count += 1
@@ -33,7 +33,7 @@ async def _pdf(bot, callback_query):
             await pablo.edit_text("Process Stopped. can't download manga url")
             shutil.rmtree(d)
             return
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         file_dir = file[8:-1]
         p = Path('.')
         for f in p.glob(f'Manga/{file_dir}/*.zip'):
@@ -49,17 +49,14 @@ async def _pdf(bot, callback_query):
         await pablo.edit_text('Uploading...')
         await bot.send_document(
             update.chat.id,
-            file_dir + '.zip',
+            f'{file_dir}.zip',
             caption=file_dir,
             progress=progress_for_pyrogram,
-            progress_args=(
-                'Uploading...',
-                pablo,
-                start_time
-            )
+            progress_args=('Uploading...', pablo, start_time),
         )
-        os.remove(file_dir + '.zip')
-        shutil.rmtree(manga_dir)
+
+        os.remove(f'{file_dir}.zip')
+        shutil.rmtree(d)
         await pablo.delete()
 
 
@@ -78,7 +75,7 @@ async def _zip(bot, callback_query):
     await run_cmd(cmd)
     count = 0
     d = manga_dir
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         for path in os.listdir(file):
             if os.path.isfile(os.path.join(file, path)):
                 count += 1
@@ -86,24 +83,21 @@ async def _zip(bot, callback_query):
             await pablo.edit_text("Process Stopped. can't download manga url")
             shutil.rmtree(d)
             return
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         file_dir = file[8:-1]
         shutil.make_archive(file_dir, 'zip', file)
         start_time = time.time()
         await pablo.edit_text('Uploading...')
         await bot.send_document(
             update.chat.id,
-            file_dir + '.zip',
+            f'{file_dir}.zip',
             caption=file_dir,
             progress=progress_for_pyrogram,
-            progress_args=(
-                'Uploading...',
-                pablo,
-                start_time
-            )
+            progress_args=('Uploading...', pablo, start_time),
         )
-        os.remove(file_dir + '.zip')
-        shutil.rmtree(manga_dir)
+
+        os.remove(f'{file_dir}.zip')
+        shutil.rmtree(d)
         await pablo.delete()
 
 
@@ -123,7 +117,7 @@ async def _folder(bot, callback_query):
     await run_cmd(cmd)
     count = 0
     d = manga_dir
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         for path in os.listdir(file):
             if os.path.isfile(os.path.join(file, path)):
                 count += 1
@@ -131,7 +125,7 @@ async def _folder(bot, callback_query):
             await pablo.edit_text("Process Stopped. can't download manga url")
             shutil.rmtree(d)
             return
-    for file in glob.glob(f'{manga_dir}*/'):
+    for file in glob.glob(f'{d}*/'):
         file_dir = file[8:-1]
         p = Path('.')
         for f in p.glob(f'Manga/{file_dir}/*.zip'):
@@ -144,15 +138,12 @@ async def _folder(bot, callback_query):
         await pablo.edit_text('Uploading...')
         await bot.send_document(
             update.chat.id,
-            file_dir + '.zip',
+            f'{file_dir}.zip',
             caption=file_dir,
             progress=progress_for_pyrogram,
-            progress_args=(
-                'Uploading...',
-                pablo,
-                start_time
-            )
+            progress_args=('Uploading...', pablo, start_time),
         )
-        os.remove(file_dir + '.zip')
-        shutil.rmtree(manga_dir)
+
+        os.remove(f'{file_dir}.zip')
+        shutil.rmtree(d)
         await pablo.delete()

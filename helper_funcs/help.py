@@ -389,20 +389,13 @@ http://zinmanga.com
 '''
 
 def check_url(url):
-    if 'http' or 'https' in url:
-        pass
-    else:
-        return
     if ' ' in url:
         url = url.split(' ')[0]
     ext = tldextract.extract(url)
     pre = f'{ext.subdomain}.{ext.domain}.{ext.suffix}'
     if not ext.subdomain:
         pre = f'{ext.domain}.{ext.suffix}'
-    if pre in supported:
-        return True
-    else:
-        return False
+    return pre in supported
 
 
 async def run_cmd(cmd: str) -> Tuple[str, str, int, int]:
@@ -440,9 +433,11 @@ async def progress_for_pyrogram(
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
         progress = "[{0}{1}] \nP: {2}%\n".format(
-            ''.join(["█" for i in range(math.floor(percentage / 5))]),
-            ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
-            round(percentage, 2))
+            ''.join(["█" for _ in range(math.floor(percentage / 5))]),
+            ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2),
+        )
+
 
         tmp = progress + "{0} of {1}\nSpeed: {2}/s\nETA: {3}\n".format(
             humanbytes(current),
@@ -473,17 +468,20 @@ def humanbytes(size):
     while size > power:
         size /= power
         n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+    return f'{str(round(size, 2))} {Dic_powerN[n]}B'
 
 
 def TimeFormatter(milliseconds: int) -> str:
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    seconds, milliseconds = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "") + \
-        ((str(milliseconds) + "ms, ") if milliseconds else "")
+    tmp = (
+        (f'{str(days)}d, ' if days else "")
+        + (f'{str(hours)}h, ' if hours else "")
+        + (f'{str(minutes)}m, ' if minutes else "")
+        + (f'{str(seconds)}s, ' if seconds else "")
+        + (f'{str(milliseconds)}ms, ' if milliseconds else "")
+    )
+
     return tmp[:-2]
